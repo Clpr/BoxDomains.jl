@@ -1,0 +1,12 @@
+name = "BoxDomains"
+uuid = "c7d1f724-ac96-48e5-b8ce-62df78ae7f65"
+authors = ["Clpr <zhao1tian1hao1@outlook.com>"]
+version = "0.1.0"
+
+[deps]
+NamedArrays = "86f7a689-2022-50b4-a561-43c23ac3c673"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+NamedArrays = "0.10.3"
+StaticArrays = "1.9.13"
