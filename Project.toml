@@ -1,7 +1,7 @@
 name = "BoxDomains"
 uuid = "c7d1f724-ac96-48e5-b8ce-62df78ae7f65"
 authors = ["Clpr <zhao1tian1hao1@outlook.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 NamedArrays = "86f7a689-2022-50b4-a561-43c23ac3c673"
