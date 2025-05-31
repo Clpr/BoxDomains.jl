@@ -253,6 +253,28 @@ function rsg(
         dimnames = ("Node", "Dimension")
     )
 end
+# ------------------------------------------------------------------------------
+function chebnodesU(lb::Real, ub::Real, n::Int)::Vector{Float64}
+    # Generate ChebyshevU nodes in the interval [lb, ub]
+    @assert n >= 2 "n must be at least 2"
+    res = -cos.((0:n-1) .* π ./ (n-1)) # the chebU formula generates n+1 nodes
+    res .+= 1.0                     # shift to [0,2]
+    res .*= (ub - lb) / 2.0          # scale to [0,ub-lb]
+    res .+= lb                       # shift to [lb,ub]
+    return res
+end
+# ------------------------------------------------------------------------------
+function chebnodesT(lb::Real, ub::Real, n::Int)::Vector{Float64}
+    # Generate ChebyshevT nodes in the interval [lb, ub]
+    @assert n >= 1 "n must be at least 1"
+    res = -cos.(
+        ((0:n-1) .+ 0.5) .* π ./ n
+    )
+    res .+= 1.0                     # shift to [0,2]
+    res .*= (ub - lb) / 2.0          # scale to [0,ub-lb]
+    res .+= lb                       # shift to [lb,ub]
+    return res
+end 
 
 
 
