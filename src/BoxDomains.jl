@@ -615,9 +615,6 @@ end
 function Base.size(td::TensorDomain{D})::NTuple{D,Int} where D
     return Tuple(td.Ns)
 end
-function Base.ndims(td::TensorDomain{D})::Int where D
-    return D
-end
 
 # ------------------------------------------------------------------------------
 function Base.CartesianIndices(td::TensorDomain{D})::CartesianIndices{D} where D
