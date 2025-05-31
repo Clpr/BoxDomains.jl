@@ -63,6 +63,10 @@ function Base.clamp(x::AbsV, bd::AbstractBoxDomain{D})::AbsV where D
     return clamp.(x, bd.lb, bd.ub)
 end
 # ------------------------------------------------------------------------------
+function Base.ndims(bd::AbstractBoxDomain{D})::Int where D
+    return D
+end
+# ------------------------------------------------------------------------------
 function Base.rand(bd::AbstractBoxDomain{D})::V64 where D
     X = rand(F64, D)
     for j in 1:D
