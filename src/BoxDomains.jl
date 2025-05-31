@@ -584,6 +584,18 @@ function Base.getindex(
     )
 end
 function Base.getindex(
+    td::TensorDomain{D},
+    i2j::Vector{Int}
+)::TensorDomain where D
+    # return a sub-domain
+    return TensorDomain(
+        td.lb[i2j],
+        td.ub[i2j],
+        td.Ns[i2j],
+        dimnames = td.dimnames[i2j]
+    )
+end
+function Base.getindex(
     td   ::TensorDomain{D},
     dname::Symbol
 )::LinRange64 where D
