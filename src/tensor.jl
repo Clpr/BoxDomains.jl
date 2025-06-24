@@ -162,12 +162,16 @@ end
 Construct a `TensorDomain` from a `BoxDomain` by specifying the number of grid 
 points in each dimension.
 """
-function TensorDomain(bd::BoxDomain{D}, Ns::Iterable{Int}) where D
-    TensorDomain(bd.lb, bd.ub, Ns, dimnames = bd.dimnames)
+function TensorDomain(
+    bd::BoxDomain{D}, 
+    Ns::Iterable{Int} ;
+    dimnames::Iterable{Symbol} = bd.dimnames
+) where D
+    TensorDomain(bd.lb, bd.ub, Ns, dimnames = dimnames)
 end
 # ------------------------------------------------------------------------------
 function BoxDomain(td::TensorDomain)
-    return BoxDomain(td.lb, td.up, dimnames = td.dimnames)
+    return BoxDomain(td.lb, td.ub, dimnames = td.dimnames)
 end
 
 
