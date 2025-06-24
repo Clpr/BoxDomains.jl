@@ -12,7 +12,7 @@ Supports named access to the intervals, and iteration over the intervals.
 
 ## Example
 ```julia
-bds = include("BoxDomains.jl")
+bds = include("src/BoxDomains.jl")
 
 # test: shortcut construction, hypercube in D-dim
 domain = bds.BoxDomain(3)
@@ -31,6 +31,11 @@ x in domain         # alias
 x ∉ domain          # check if x is not in the domain
 
 domain[1]           # get a 2-tuple of (lb,ub) of the 1st dimension
+domain[:k]
+
+domain[1:2]         # get a sub-domain of the 1st and 2nd dimensions
+domain[[1,2]]
+domain[[:k,:l]]
 
 clamp(x[2], domain, 2) # only the 2nd component
 clamp(x, domain)    # the whole point
@@ -99,6 +104,61 @@ is a hypercube in D-dimensional space.
 """
 BoxDomain(D::Int) = BoxDomain(zeros(D), ones(D))
 # ------------------------------------------------------------------------------
-function Base.getindex(domain::BoxDomain{D}, i::Int)::NTuple{2,Int} where D
-    return (domain.lb[i], domain.ub[i])
+function Base.getindex(domain::BoxDomain{D}, i::Int)::BoxDomain where D
+    return BoxDomain(
+        [domain.lb[i],], 
+        [domain.ub[i],],
+        dimnames = (domain.dimnames[i],)
+    )
+end
+function Base.getindex(
+	domain::BoxDomain{D}, 
+    i2j::UnitRange{Int}
+)::BoxDomain where D
+	# return a sub-domain
+    return BoxDomain(
+    	domain.lb[i2j],
+        domain.ub[i2j],
+        dimnames = domain.dimnames[i2j]
+    )
+end
+function Base.getindex(
+    domain::BoxDomain{D},
+    i2j::Vector{Int}
+)::BoxDomain where D
+    # return a sub-domain
+    return BoxDomain(
+        domain.lb[i2j],
+        domain.ub[i2j],
+        dimnames = domain.dimnames[i2j]
+    )
+end
+function Base.getindex(
+    domain   ::BoxDomain{D},
+    dname::Symbol
+)::BoxDomain where D
+    name2idx = Dict(domain.dimnames .=> (1:length(domain.dimnames)) )
+    return BoxDomain(
+        [domain.lb[name2idx[dname]],],
+        [domain.ub[name2idx[dname]],],
+        dimnames = (dname,)
+    )
+end
+function Base.getindex(
+    domain::BoxDomain{D},
+    dnames::Vector{Symbol}
+)::BoxDomain where D
+
+    name2idx = Dict(domain.dimnames .=> 1:length(domain.dimnames))    
+
+    lb     = F64[]
+    ub     = F64[]
+    dNames = Symbol[]
+
+    for d in dnames
+        push!(lb, domain.lb[name2idx[d]])
+        push!(ub, domain.ub[name2idx[d]])
+        push!(dNames, d)
+    end
+    return BoxDomain(lb, ub, dimnames = dNames)
 end
