@@ -236,9 +236,8 @@ end
 
 # ------------------------------------------------------------------------------
 function Base.stack(td::TensorDomain{D})::NM64 where D
-    xStack = td |> Iterators.product |> collect |> vec |> stack |> permutedims
     return NamedArray(
-        xStack,
+        stack(td |> collect |> vec, dims = 1),
         names = (1:size(xStack,1), td.dimnames |> collect),
         dimnames = ("Node", "Dimension")
     )
