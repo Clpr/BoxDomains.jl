@@ -39,7 +39,7 @@ export centroid, affine, rsg
 
 export BoxDomain
 export TensorDomain
-
+export CustomTensorDomain
 
 
 
@@ -56,11 +56,12 @@ include("interface.jl")
 include("box.jl")
 
 
-# tensor/Cartesian produced uniform gridded space
+# tensor/Cartesian product uniform gridded space
 include("tensor.jl")
 
 
-
+# tensor/Cartesian product custom gridded space
+include("custom.jl")
 
 
 
