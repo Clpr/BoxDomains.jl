@@ -1,7 +1,7 @@
 name = "BoxDomains"
 uuid = "c7d1f724-ac96-48e5-b8ce-62df78ae7f65"
 authors = ["Clpr <zhao1tian1hao1@outlook.com>"]
-version = "0.2.3"
+version = "0.3.0"
 
 [deps]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"

@@ -27,6 +27,7 @@ In this package, I implements an elegant abstraction of such box spaces and over
 So far, this package has implemented two types of box domains:
 - `BoxDomain{D}`: the most generic type which does not assume any grid structure or discretization strategies over the domain. It supports many overloaded built-in functions which are interface to all the other derivative structs.
 - `TensorDomain{D}`: beyond a generic box space, this struct assumes a Cartesian-product discretization using evenly-spaced gird node points. In addition to the interface functions, it supports much more type-specific functions due to the Cartesian assumption.
+- `CustomTensorDomain{D}`: By relaxing the evenly-spaced grid node assumption, this struct allows the users to specify custom nodes for every dimension. Then, it works almost the same as `TensorDomain{D}`.
 
 
 **BoxDomain{D}**:
@@ -126,7 +127,93 @@ LinearIndices(sDomain)    # creates a LinearIndices for the domain
 map(sum, sDomain) # map a function over the grid points
 map!(sum, zeros(sDomain), sDomain) # map a function over the grid points, store
 
+
+bds.locate([1,0.5,100], sDomain) # locate a point in the CustomTensorDomain, sandwiched by the indices of the nearest two grid poitns along each dimension
+bds.locate(rand(3), sDomain)
+
+bds.neighbors([0.9,0.4,2.0], sDomain) # get the nearest on-grid neighbors of a point in the CustomTensorDomain; denoted by the node indices
+
 ```
+
+**CustomTensorDomain{D}**
+
+```julia
+import BoxDomains as bds
+
+# convert from a TensorDomain
+sDomain = bds.CustomTensorDomain(bds.TensorDomain([4,5,6]))
+
+# standard constructor: manually specify the grids
+sDomain = bds.CustomTensorDomain(
+    (
+        LinRange(0,1,20),
+        [-2,0.5,0.9,1.1],
+        [0,1,100]
+    ),
+    dimnames = ["k", "l", "m"]
+)
+
+# convert to a BoxDomain
+bds.BoxDomain(sDomain)
+
+
+# standard methods
+x = [2.0, 3.0, 4.0]
+x ∈ sDomain
+x in sDomain
+x ∉ sDomain
+clamp(x[2], sDomain, 2)
+clamp(x, sDomain)
+rand(sDomain)
+rand(sDomain, 10)
+LinRange(sDomain, 1, 50)
+LinRange(sDomain, :m, 50)
+bds.centroid(sDomain)
+bds.affine(x, sDomain, bds.TensorDomain([2,3,4]))
+bds.affine(x, sDomain, lb = -1, ub = 1)
+bds.rsg(sDomain, 4)
+
+
+# CustomTensorDomain-specific overloaded Base methods
+
+
+sDomain[1]   # indexing: returns a LinRange of the 1st dimension
+sDomain[:k]  # indexing: by dimension name
+sDomain[2:3] # slicing: returns a sliced 2-dim TensorDomain by the 2nd, 3rd dim
+sDomain[CartesianIndex(1,2,3)] # returns a 3D point in the domain, Cartesian
+
+Iterators.product(sDomain) # creates a product iterator for the domain
+
+collect(sDomain) # returns a D-tuple of LinRange, useful for Interpolations.jl
+
+stack(sDomain) # creates a tensor-stacked NamedMatrix, prod(Ns) x D size
+
+
+Array(sDomain) # initialize a tensor-stacked size Array, filled by undef/0/1
+zeros(sDomain)
+ones(sDomain)
+
+length(sDomain) # get how many grid points in total
+size(sDomain)   # get how many grid points in each dimension as a D-int tuple
+ndims(sDomain)  # get the dimensionality of the domain
+
+LinRange(sDomain, 1, 50) # creates a LinRange for the 1st dimension, 50 points
+
+CartesianIndices(sDomain) # creates a CartesianIndices for the domain
+LinearIndices(sDomain)    # creates a LinearIndices for the domain
+
+map(sum, sDomain) # map a function over the grid points
+map!(sum, zeros(sDomain), sDomain) # map a function over the grid points, store
+
+
+bds.locate([1,0.5,100], sDomain) # locate a point in the CustomTensorDomain, sandwiched by the indices of the nearest two grid poitns along each dimension
+bds.locate(rand(3), sDomain)
+
+bds.neighbors([0.9,0.4,2.0], sDomain) # get the nearest on-grid neighbors of a point in the CustomTensorDomain; denoted by the node indices
+
+```
+
+
 
 
 Specially, this package implements a convenient method `rsg()` to
@@ -143,7 +230,7 @@ To unlock the full power and functionalities, please check my another package
 
 ## License
 
-MIT license
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
 
