@@ -36,7 +36,7 @@ intervals.
 
 ## Examples
 ```julia
-bds = include("BoxDomains.jl")
+import BoxDomains as bds
 
 # test: shortcut construction
 sDomain = bds.TensorDomain([5,6,7]) # 3D hypercube [0,1]^3
@@ -95,6 +95,11 @@ LinearIndices(sDomain)    # creates a LinearIndices for the domain
 
 map(sum, sDomain) # map a function over the grid points
 map!(sum, zeros(sDomain), sDomain) # map a function over the grid points, store
+
+bds.locate([1,0.5,100], sDomain) # locate a point in the CustomTensorDomain, sandwiched by the indices of the nearest two grid poitns along each dimension
+bds.locate(rand(3), sDomain)
+
+bds.neighbors([0.9,0.4,2.0], sDomain) # get the nearest on-grid neighbors of a point in the CustomTensorDomain; denoted by the node indices
 
 ```
 """
@@ -236,8 +241,9 @@ end
 
 # ------------------------------------------------------------------------------
 function Base.stack(td::TensorDomain{D})::NM64 where D
+    xStack = stack(td |> Iterators.product |> collect |> vec, dims = 1)
     return NamedArray(
-        stack(td |> Iterators.product |> collect |> vec, dims = 1),
+        xStack,
         names = (1:size(xStack,1), td.dimnames |> collect),
         dimnames = ("Node", "Dimension")
     )
