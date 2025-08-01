@@ -374,6 +374,8 @@ function Base.merge(
     for nm in td2.dimnames
         if nm in dnames2
             push!(dnames2, Symbol(nm, "_2"))
+        else
+            push!(dnames2, nm)
         end
     end
     return TensorDomain(

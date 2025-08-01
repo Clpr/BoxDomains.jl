@@ -170,6 +170,8 @@ function Base.merge(bd1::BoxDomain{D1}, bd2::BoxDomain{D2}) where {D1,D2}
     for nm in bd2.dimnames
         if nm in dnames2
             push!(dnames2, Symbol(nm, "_2"))
+        else
+            push!(dnames2, nm)
         end
     end
     return BoxDomain(
