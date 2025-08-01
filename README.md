@@ -65,6 +65,8 @@ bds.affine(x, domain, bds.BoxDomain(3)) # affine transform to a hypercube
 bds.affine(x, domain, lb = -1, ub = 1) # affine transform to [-1,1]^D
 
 bds.rsg(domain, 4) # create a 2-based lattice regular sparse grid, accuracy 4
+
+merge(domain,domain) # merge 2 domains to a higher-dimensional one; duplicate dimension names are suffixed with "_2"
 ```
 
 **TensorDomain{D}**:
@@ -114,6 +116,8 @@ stack(sDomain) # creates a tensor-stacked NamedMatrix, prod(Ns) x D size
 Array(sDomain) # initialize a tensor-stacked size Array, filled by undef/0/1
 zeros(sDomain)
 ones(sDomain)
+
+merge(domain,domain) # merge 2 domains to a higher-dimensional one; duplicate dimension names are suffixed with "_2"
 
 length(sDomain) # get how many grid points in total
 size(sDomain)   # get how many grid points in each dimension as a D-int tuple
@@ -192,6 +196,8 @@ stack(sDomain) # creates a tensor-stacked NamedMatrix, prod(Ns) x D size
 Array(sDomain) # initialize a tensor-stacked size Array, filled by undef/0/1
 zeros(sDomain)
 ones(sDomain)
+
+merge(domain,domain) # merge 2 domains to a higher-dimensional one; duplicate dimension names are suffixed with "_2"
 
 length(sDomain) # get how many grid points in total
 size(sDomain)   # get how many grid points in each dimension as a D-int tuple

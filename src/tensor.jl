@@ -84,6 +84,8 @@ Array(sDomain) # initialize a tensor-stacked size Array, filled by undef/0/1
 zeros(sDomain)
 ones(sDomain)
 
+merge(sDomain,sDomain) # merge two domains, duplicate dimnames are suffixed with "_2"
+
 length(sDomain) # get how many grid points in total
 size(sDomain)   # get how many grid points in each dimension as a D-int tuple
 ndims(sDomain)  # get the dimensionality of the domain
@@ -362,4 +364,22 @@ where `res = bdm.neighbors(x,td)` and `i` is the `i`-th neighbor saved in `res`.
 """
 function neighbors(x::AbstractVector, td::TensorDomain{D}) where D
     return Iterators.product(locate(x, td)...) |> unique
+end
+# ------------------------------------------------------------------------------
+function Base.merge(
+    td1::TensorDomain{D1},
+    td2::TensorDomain{D2}
+) where {D1,D2}
+    dnames2::Vector{Symbol} = td1.dimnames |> collect
+    for nm in td2.dimnames
+        if nm in dnames2
+            push!(dnames2, Symbol(nm, "_2"))
+        end
+    end
+    return TensorDomain(
+        vcat(td1.lb, td2.lb),
+        vcat(td1.ub, td2.ub),
+        Int[td1.Ns..., td2.Ns...],
+        dimnames = dnames2
+    )
 end

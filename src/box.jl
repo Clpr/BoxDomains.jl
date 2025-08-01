@@ -53,6 +53,8 @@ bds.affine(x, domain, lb = -1, ub = 1) # affine transform to [-1,1]^D
 
 bds.rsg(domain, 4) # create a 2-based lattice regular sparse grid, accuracy 4
 
+merge(sDomain,sDomain) # merge two domains, duplicate dimnames are suffixed with "_2"
+
 ```
 """
 struct BoxDomain{D} <: AbstractBoxDomain{D}
@@ -161,4 +163,18 @@ function Base.getindex(
         push!(dNames, d)
     end
     return BoxDomain(lb, ub, dimnames = dNames)
+end
+# ------------------------------------------------------------------------------
+function Base.merge(bd1::BoxDomain{D1}, bd2::BoxDomain{D2}) where {D1,D2}
+    dnames2::Vector{Symbol} = bd1.dimnames |> collect
+    for nm in bd2.dimnames
+        if nm in dnames2
+            push!(dnames2, Symbol(nm, "_2"))
+        end
+    end
+    return BoxDomain(
+        [bd1.lb; bd2.lb],
+        [bd1.ub; bd2.ub],
+        dimnames = dnames2
+    )
 end
